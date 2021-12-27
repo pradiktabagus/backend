@@ -49,7 +49,7 @@ router.post(
         validateExist.push({
           param: "Email",
           value: email,
-          message: `${email} is already exist`,
+          message: `Email ${email} is already exist`,
         });
       }
 
@@ -57,7 +57,7 @@ router.post(
         validateExist.push({
           param: "Username",
           value: username,
-          message: `${username} is already exist`,
+          message: `Username ${username} is already exist`,
         });
       }
 
@@ -109,7 +109,8 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        status: 400,
+        code: 400,
+        status: false,
         error: errors.array().map((err) => ({
           param: err.param,
           value: err.value,
@@ -123,23 +124,27 @@ router.post(
       const user = await User.findOne({ username });
       if (!user) {
         return res.status(400).json({
-          status: 400,
+          code: 400,
+          status: true,
           error: `User ${username} Not Found`,
         });
       }
       if (!user || !user.validPassword(password)) {
         return res.status(400).json({
-          status: 400,
+          code: 400,
+          status: false,
           error: `Password is Invalid`,
         });
       }
       return res.json({
-        status: 200,
-        data: user.toAuthJSON(),
+        code: 200,
+        status: true,
+        data: user.toRetrieveToken(),
       });
     } catch (err) {
       res.status(500).json({
-        status: 500,
+        code: 500,
+        status: false,
         error: "Internal Server Error",
       });
     }
@@ -156,7 +161,6 @@ router.get("/me", auth, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
     const user = await User.findById(req.user.id);
-    console.log(user);
     res.status(200).json({
       status: 200,
       data: user.toProfileJSONFor(),
@@ -164,6 +168,12 @@ router.get("/me", auth, async (req, res) => {
   } catch (e) {
     res.send({ message: "Error in Fetching user" });
   }
+});
+
+router.get("/:username", auth, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ username: req.user });
+  } catch (error) {}
 });
 
 module.exports = router;

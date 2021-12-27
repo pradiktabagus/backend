@@ -9,6 +9,8 @@ var session = require("express-session");
 
 var indexRouter = require("./routes/index");
 var userRouter = require("./routes/api/users");
+var profileRouter = require("./routes/api/profile");
+
 const { Error } = require("mongoose");
 
 //initiate mongoo server
@@ -16,10 +18,10 @@ InitiateMongoServer();
 var app = express();
 
 //cors
-var allowedOrigins = ["http://localhost:4000", "https://www.nanali.co"];
+var allowedOrigins = ["http://localhost:3002", "https://www.nanali.co"];
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: "*",
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
     allowedHeaders: "Content-Type, token",
     optionsSuccessStatus: 200,
@@ -53,6 +55,7 @@ app.use("/", indexRouter);
  * @Method - *
  */
 app.use("/api/auth", userRouter);
+app.use("/api/profile", profileRouter);
 
 require("./model/user");
 require("./config/passport");

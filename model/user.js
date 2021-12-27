@@ -73,6 +73,12 @@ UserSchema.methods.toAuthJSON = function () {
   };
 };
 
+UserSchema.methods.toRetrieveToken = function () {
+  return {
+    token: this.generateJWT(),
+  };
+};
+
 UserSchema.methods.errorAuthJSON = function (error) {
   return {
     message: [error],
