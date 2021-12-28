@@ -10,6 +10,7 @@ var session = require("express-session");
 var indexRouter = require("./routes/index");
 var userRouter = require("./routes/api/users");
 var profileRouter = require("./routes/api/profile");
+var articleRouter = require("./routes/api/article");
 
 const { Error } = require("mongoose");
 
@@ -56,6 +57,7 @@ app.use("/", indexRouter);
  */
 app.use("/api/auth", userRouter);
 app.use("/api/profile", profileRouter);
+app.use("/api/article", articleRouter);
 
 require("./model/user");
 require("./config/passport");
