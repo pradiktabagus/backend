@@ -170,10 +170,4 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-router.get("/:username", auth, async (req, res, next) => {
-  try {
-    const user = await User.findOne({ username: req.user });
-  } catch (error) {}
-});
-
 module.exports = router;

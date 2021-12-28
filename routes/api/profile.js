@@ -7,7 +7,11 @@ router.param("username", function (req, res, next, username) {
   User.findOne({ username: username })
     .then(function (user) {
       if (!user) {
-        return res.sendStatus(404);
+        return res.status(404).json({
+          code: 404,
+          status: false,
+          error: `${username} not found`,
+        });
       }
       req.profile = user;
       return next();
@@ -20,8 +24,9 @@ router.get("/:username", auth, function (req, res, next) {
     User.findById(req.user.id).then(function (user) {
       if (!user) {
         return res.status(404).json({
-          status: 404,
-          data: req.profile.toProfileJSONFor(false),
+          code: 404,
+          status: false,
+          error: `user not found`,
         });
       }
       return res.status(200).json({
@@ -30,9 +35,11 @@ router.get("/:username", auth, function (req, res, next) {
       });
     });
   } else {
-    return res
-      .status(404)
-      .json({ status: 404, data: req.profile.toProfileJSONFor(false) });
+    return res.status(404).json({
+      code: 404,
+      status: false,
+      error: `user not found`,
+    });
   }
 });
 

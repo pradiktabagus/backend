@@ -100,4 +100,3 @@ UserSchema.methods.toProfileJSONFor = function (user) {
 };
 
 module.exports = mongoose.model("User", UserSchema);
-// mongoose.model("User", UserSchema);
