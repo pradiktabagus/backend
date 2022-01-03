@@ -25,4 +25,17 @@ router.post("/", auth, function (req, res, next) {
     .catch(next);
 });
 
+router.get("/feeds", auth, function (req, res, next) {
+  const { limit, offset } = req.query;
+  let lim = limit ? limit : 20;
+  let off = offset ? offset : 0;
+
+  User.findById(req.user.id).then(function (user) {
+    if (!user) {
+      return res.sendStatus(401);
+    }
+    Promise.all([Article.find({})]);
+  });
+});
+
 module.exports = router;
