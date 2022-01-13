@@ -6,7 +6,8 @@ var logger = require("morgan");
 var cors = require("cors");
 var InitiateMongoServer = require("./config/db");
 var session = require("express-session");
-
+var { Server } = require("socket.io");
+var http = require("http");
 var indexRouter = require("./routes/index");
 var userRouter = require("./routes/api/users");
 var profileRouter = require("./routes/api/profile");
@@ -48,6 +49,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+const io = new Server(http.createServer(app), {
+  path: "/socket.io",
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log(socket.id);
+  socket.on("disconnect", () => {
+    console.log("user disconnect: ", socket.id);
+  });
+});
 
 app.use("/", indexRouter);
 /**
